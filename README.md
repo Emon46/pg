@@ -1,5 +1,25 @@
 # pg
 
+### Patroni with postgres
+- diable write mode in leader node
+- pause patroni with api call https://patroni.readthedocs.io/en/latest/pause.html with this there will be no unintentional failover
+- Shutdown database (or Postgres service).
+- run initdb to initialize new database
+  ```
+  export PGDATA=/var/pv/data.new && rm -rf /var/pv/data.new/* && /<pg-newVersion>/initdb --pgdata=/var/pv/data.new
+  ```
+- Copy configurations file pg_hba.conf, postgres.conf, postgres_auto.cong or other files if there is any.
+- do pg_upgrade (check the log properly, if there is any post action required it should be detailed in the logs)
+- fix patroni configuration
+- DCS (Dynamic Configuration Settings) check how we can do it
+- start patroni
+
+https://github.com/anasanjaria/blogs/blob/main/postgres-upgrade/pgupgrade.sh
+
+
+### k8s cluster update
+
+
 for major upgrade need to take few steps one by one. make sure this process run  one after an other. other wise there will be failure scenario.
 0. we have previously copied old binary. in the main upgrade func
 
