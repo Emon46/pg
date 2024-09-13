@@ -32,6 +32,14 @@ copy this 4 files:
   /var/opt/gitlab/postgresql/data/pg_ident.conf
 ```
 
+remove archiving section from /var/opt/gitlab/postgresql/data/runtime.conf
+```
+# - Archiving -
+archive_command = '/opt/wal-g/archive-walg.sh %p'   # command to use to archive a logfile segment
+archive_timeout = 120    # force a logfile segment switch after this
+        # number of seconds; 0 disables
+```
+
 docker run to have both binaries:
 ```
 docker run -it -v /home/hemon-hkg/pg-data-em-test/:/var/opt/gitlab/postgresql/ -v /home/hemon-hkg/pg-data-em-test/logs:/var/log/gitlab/postgresql -v /opt/gitlab/embedded/ssl/certs:/opt/gitlab/embedded/ssl/certs --entrypoint bash  ghcr.io/zalando/spilo-15:3.0-p1
