@@ -17,6 +17,55 @@
 https://github.com/anasanjaria/blogs/blob/main/postgres-upgrade/pgupgrade.sh
 
 
+###
+
+
+```
+  /opt/gitlab/embedded/bin/pg_controldata -D /var/opt/gitlab/postgresql/data/
+```
+
+copy this 4 files:
+```
+  /var/opt/gitlab/postgresql/data/postgresql.conf
+  /var/opt/gitlab/postgresql/data/runtime.conf
+  /var/opt/gitlab/postgresql/data/pg_hba.conf
+  /var/opt/gitlab/postgresql/data/pg_ident.conf
+```
+
+docker run to have both binaries:
+```
+docker run -it -v /home/hemon-hkg/pg-data-em-test/:/var/opt/gitlab/postgresql/ -v /home/hemon-hkg/pg-data-em-test/logs:/var/log/gitlab/postgresql -v /opt/gitlab/embedded/ssl/certs:/opt/gitlab/embedded/ssl/certs --entrypoint bash  ghcr.io/zalando/spilo-15:3.0-p1
+```
+init new data dir:
+```
+su - postgres -c "mkdir /var/opt/gitlab/postgresql/data-new"
+```
+
+single user mode incase we need to change anything in database:
+
+```
+su - postgres -c "/usr/lib/postgresql/13/bin/postgres --single -D /var/opt/gitlab/postgresql/data template1"
+
+cltr+d
+```
+
+Initidb with new version:
+```
+su - postgres -c "/usr/lib/postgresql/14/bin/initdb --pgdata=/var/opt/gitlab/postgresql/data-new --encoding=UTF8 --locale=C  -U gitlab-psql"
+```
+
+
+run pg_upgrade
+```
+su - postgres -c "/usr/lib/postgresql/14/bin/pg_upgrade --jobs=3 -U gitlab-psql -b /usr/lib/postgresql/13/bin/ -B /usr/lib/postgresql/14/bin/ -d /var/opt/gitlab/postgresql/data -D /var/opt/gitlab/postgresql/data-new --link"
+```
+
+
+
+```
+CREATE ROLE postgres WITH SUPERUSER LOGIN PASSWORD 'your_password';
+```
+
 ### k8s cluster update
 
 
