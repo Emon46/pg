@@ -90,14 +90,14 @@ sed -i 's/peer map=gitlab/trust/'  pg_hba.conf
 
 export CONF_PATH="runtime.conf" && sed -i "/archive_command = '\/opt\/wal-g\/archive-walg.sh %p'/d" "$CONF_PATH" && sed -i '/archive_timeout = 120/d' "$CONF_PATH" && sed -i '/# number of seconds; 0 disables/d' "$CONF_PATH"
 
-/usr/lib/postgresql/14/bin/pg_upgrade --jobs=3 -U gitlab-psql -b /usr/lib/postgresql/13/bin/ -B /usr/lib/postgresql/14/bin/ -d /var/opt/gitlab/postgresql/data -D /var/opt/gitlab/postgresql/data-new --link
+/usr/lib/postgresql/14/bin/pg_upgrade --jobs=$(( $(grep -c -E '^processor' /proc/cpuinfo) - 1 )) -U gitlab-psql -b /usr/lib/postgresql/13/bin/ -B /usr/lib/postgresql/14/bin/ -d /var/opt/gitlab/postgresql/data -D /var/opt/gitlab/postgresql/data-new --link
 
 
 /usr/lib/postgresql/14/bin/pg_ctl -D /var/opt/gitlab/postgresql/data-new start -U gitlab-psql -o "-p 5433 -c unix_socket_directories='/var/opt/gitlab/postgresql'"
 
 /usr/lib/postgresql/14/bin/pg_ctl status -D /var/opt/gitlab/postgresql/data-new
 
-/usr/lib/postgresql/14/bin/vacuumdb -U gitlab-psql --all --analyze-in-stages -p 5433 -j 5 --echo -h /var/opt/gitlab/postgresql
+/usr/lib/postgresql/14/bin/vacuumdb -U gitlab-psql --all --analyze-in-stages -p 5433 -j $(( $(grep -c -E '^processor' /proc/cpuinfo) - 1 )) --echo -h /var/opt/gitlab/postgresql
 
 /usr/lib/postgresql/14/bin/psql -U gitlab-psql -d gitlabhq_production -p 5433 -h /var/opt/gitlab/postgresql -f update_extensions.sql
 
