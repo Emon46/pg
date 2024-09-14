@@ -1,5 +1,21 @@
 # pg_upgrade test run
 
+## analysis
+- ubuntu image we used for this test run `ghcr.io/zalando/spilo-15:3.0-p1`
+- luckily we don't have seperate tablespace which would have add more complexity 
+- can't use anything else but `--locale=C` in initdb as it was used for older cluster
+- vaccum binary works faster then usual process. so we should use that one
+- it took 5 mnts to setup the docker images and infra
+- took 2 minutes to run the initidb 
+- it tooks 3-4 minutes to run pg-upgrade process
+- it tooks 5-6 minutes to run the post upgrade anylisis
+- so if we are super optimize in the whole process we can have atmost 20-25 minutes of down time
+
+## quesitons
+- how to update the embedded binary that we have inside `/opt/gitlab/embedded/bin/` with latest 14 binary?
+- i have tested this with ubuntu image? need to check if we can generate a centos image which can have both 13 and 14 just like the ubunut image we used
+  
+
 ## setup environment for testing
 
 
