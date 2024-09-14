@@ -69,6 +69,40 @@ docker run to have both binaries:
 docker run -it -v /home/hemon-hkg/pg-data-em-test/:/var/opt/gitlab/postgresql/ -v /home/hemon-hkg/pg-data-em-test/logs:/var/log/gitlab/postgresql -v /opt/gitlab/embedded/ssl/certs:/opt/gitlab/embedded/ssl/certs --entrypoint bash  ghcr.io/zalando/spilo-15:3.0-p1
 ```
 
+```
+# docker run -it -v /home/hemon-hkg/pg-data-em-test/:/var/opt/gitlab/postgresql/ -v /home/hemon-hkg/pg-data-em-test/logs:/var/log/gitlab/postgresql -v /opt/gitlab/embedded/ssl/certs:/opt/gitlab/embedded/ssl/certs --entrypoint bash  ghcr.io/zalando/spilo-15:3.0-p1
+
+
+docker run -it -v /home/hemon-hkg/pg-data-em-test/:/var/opt/gitlab/postgresql/ \
+               -v /home/hemon-hkg/pg-data-em-test/logs:/var/log/gitlab/postgresql \
+               -v /home/hemon-hkg/pg-data-em-test/hpg:/home/postgres \
+               -v /opt/gitlab/embedded/ssl/certs:/opt/gitlab/embedded/ssl/certs \
+               --entrypoint bash  ghcr.io/zalando/spilo-15:3.0-p1
+
+groupadd -g 986 gitlab-psql &&     useradd -u 991 -g 986 -d /var/opt/gitlab/postgresql -s /bin/sh gitlab-psql
+
+su - gitlab-psql
+mkdir /var/opt/gitlab/postgresql/data-new
+/usr/lib/postgresql/14/bin/initdb --pgdata=/var/opt/gitlab/postgresql/data-new --encoding=UTF8 --locale=C  -U gitlab-psql
+
+
+sed -i 's/peer map=gitlab/trust/'  pg_hba.conf
+
+export CONF_PATH="runtime.conf" && sed -i "/archive_command = '\/opt\/wal-g\/archive-walg.sh %p'/d" "$CONF_PATH" && sed -i '/archive_timeout = 120/d' "$CONF_PATH" && sed -i '/# number of seconds; 0 disables/d' "$CONF_PATH"
+
+/usr/lib/postgresql/14/bin/pg_upgrade --jobs=3 -U gitlab-psql -b /usr/lib/postgresql/13/bin/ -B /usr/lib/postgresql/14/bin/ -d /var/opt/gitlab/postgresql/data -D /var/opt/gitlab/postgresql/data-new --link
+
+
+/usr/lib/postgresql/14/bin/pg_ctl -D /var/opt/gitlab/postgresql/data-new start -U gitlab-psql -o "-p 5433 -c unix_socket_directories='/var/opt/gitlab/postgresql'"
+
+/usr/lib/postgresql/14/bin/pg_ctl status -D /var/opt/gitlab/postgresql/data-new
+
+/usr/lib/postgresql/14/bin/vacuumdb -U gitlab-psql --all --analyze-in-stages -p 5433 -j 5 --echo -h /var/opt/gitlab/postgresql
+
+/usr/lib/postgresql/14/bin/psql -U gitlab-psql -d gitlabhq_production -p 5433 -h /var/opt/gitlab/postgresql -f update_extensions.sql
+
+```
+
 
 init new data dir:
 ```
