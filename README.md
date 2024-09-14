@@ -157,6 +157,14 @@ cp /var/opt/gitlab/postgresql/data/postgresql.conf \
 
 # miscellaneous
 
+## Rollback plan
+
+```
+as we already got the doubled storage we can create a normal copy of the data with cp command just like the test run.
+if anything goes wrong just replace the corrupted data directory with the old one.
+```
+## some exploration 
+
 
 ```
 $ cat delete_old_cluster.sh
@@ -182,6 +190,7 @@ cat /var/opt/gitlab/postgresql/pgpass
 
 cat /etc/gitlab/gitlab.rb
 ```
+
 
 
 
