@@ -75,7 +75,6 @@ docker run -it -v /home/hemon-hkg/pg-data-em-test/:/var/opt/gitlab/postgresql/ -
 
 docker run -it -v /home/hemon-hkg/pg-data-em-test/:/var/opt/gitlab/postgresql/ \
                -v /home/hemon-hkg/pg-data-em-test/logs:/var/log/gitlab/postgresql \
-               -v /home/hemon-hkg/pg-data-em-test/hpg:/home/postgres \
                -v /opt/gitlab/embedded/ssl/certs:/opt/gitlab/embedded/ssl/certs \
                --entrypoint bash  ghcr.io/zalando/spilo-15:3.0-p1
 
