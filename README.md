@@ -17,7 +17,12 @@
 https://github.com/anasanjaria/blogs/blob/main/postgres-upgrade/pgupgrade.sh
 
 
-###
+### Interesting insite with update procedure
+
+this copy is for backup of the data. incase something went wrong we can do in place recovery. without any down time. The idea is just replace the directory and restart postgres
+```
+cp -r /var/opt/gitlab/postgresql/data /home/hemon-hkg/pg-data-em-test/ &
+```
 
 
 ```
