@@ -193,8 +193,23 @@ cp /var/opt/gitlab/postgresql/data/postgresql.conf \
     -f update_extensions.sql
 ```
 
+### move data directory 
+```
+rm -rf /var/opt/gitlab/postgresql/data
+mv /var/opt/gitlab/postgresql/data-new /var/opt/gitlab/postgresql/data
+```
+
 ## If you are here that means the upgrade was successful!!!!!!!!!!!!
 
+## wipe dcs data 
+```
+/opt/gitlab/embedded/bin/patronictl remove <CLUSTER_NAME>
+```
+### start patroni
+
+```
+/opt/gitlab/embedded/bin/sv start patroni
+```
 
 # miscellaneous
 
