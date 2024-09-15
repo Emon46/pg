@@ -18,6 +18,45 @@
 
 ## setup environment for testing
 
+### disable write mode in postgresql
+
+```
+curl --request PATCH \
+    --url http://localhost:8008/config \
+    --header 'Content-Type: application/json' \
+    --data '{
+  	"postgresql": {
+  		"parameters": {
+  			"default_transaction_read_only": "on"
+  		}
+  	}
+  }
+```
+
+check if the cluster write is off
+```
+su - gitlab-psql -c "psql -c 'SHOW default_transaction_read_only;' "
+```
+
+```
+ /opt/gitlab/embedded/bin/patronictl list
+```
+
+
+### pause patroni
+
+```
+ /opt/gitlab/embedded/bin/patronictl pause <cluster-name> --wait
+```
+
+### stop postgres and patroni in order
+```
+su - gitlab-psql -c "/opt/gitlab/embedded/postgresql/14/bin/pg_ctl stop -D /var/opt/gitlab/postgresql/data"
+
+/opt/gitlab/embedded/bin/sv stop patroni 
+```
+### 
+
 
 copy the data directory:
 
@@ -70,6 +109,7 @@ cp /var/opt/gitlab/postgresql/data/postgresql.conf \
     /var/opt/gitlab/postgresql/data/pg_hba.conf \
     /var/opt/gitlab/postgresql/data/pg_ident.conf \
     /var/opt/gitlab/postgresql/data/postgresql.base.conf \
+    /var/opt/gitlab/postgresql/data/patroni.dynamic.json \
     /var/opt/gitlab/postgresql/conf-old/
 ```
 
@@ -99,6 +139,7 @@ cp /var/opt/gitlab/postgresql/data/postgresql.conf \
     /var/opt/gitlab/postgresql/data/pg_hba.conf \
     /var/opt/gitlab/postgresql/data/pg_ident.conf \
     /var/opt/gitlab/postgresql/data/postgresql.base.conf \
+    /var/opt/gitlab/postgresql/data/patroni.dynamic.json \
     /var/opt/gitlab/postgresql/data/server.key \
     /var/opt/gitlab/postgresql/data/server.crt /var/opt/gitlab/postgresql/data-new/
 ```
