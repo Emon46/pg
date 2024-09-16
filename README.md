@@ -1,6 +1,6 @@
-# pg_upgrade test run
+# pg_upgrade test run for 1.6TB
 
-## analysis
+## analysis 
 - ubuntu image we used for this test run `ghcr.io/zalando/spilo-15:3.0-p1`
 - luckily we don't have seperate tablespace which would have add more complexity 
 - can't use anything else but `--locale=C` in initdb as it was used for older cluster
