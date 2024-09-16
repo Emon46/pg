@@ -17,6 +17,14 @@ for major upgrade need to take steps one by one.
 11. resume coordinator sidecar
 12. then restart other pods and take basebackup
 
+
+# pg rollback design
+
+<img width="975" alt="Screenshot 2567-09-16 at 14 36 43" src="https://github.com/user-attachments/assets/b1254402-7ae1-4478-8526-8407238f802e">
+
+
+
+
 # pg upgrade design
 
 
