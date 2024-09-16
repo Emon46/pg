@@ -184,9 +184,10 @@ for major upgrade need to take steps one by one.
 export PGDATA=/var/pv/data.new && rm -rf /var/pv/data.new/* && /<pg-newVersion>/initdb --pgdata=/var/pv/data.new
 ```
 
-
+```
 $(/var/pv/old-bin/pg_config --sharedir)
 $(/var/pv/old-bin/pg_config --pkglibdir)
+```
 
 ### this was for graceful shutdown
 ```
