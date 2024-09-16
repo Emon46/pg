@@ -251,3 +251,29 @@ cat /etc/gitlab/gitlab.rb
 
 
 
+```
+# Use CentOS 7 as the base image
+FROM centos:7
+
+RUN sed -i.bak 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i.bak 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+# Install necessary packages and PostgreSQL repository
+RUN yum -y update && \
+    yum -y install epel-release && \
+    yum -y install wget curl openssl11 libedit
+
+
+RUN mkdir -p /var/opt/gitlab/postgresql
+
+RUN groupadd -g 986 gitlab-psql && \
+                useradd -u 991 -g 986 -d /var/opt/gitlab/postgresql -s /bin/sh gitlab-psql
+
+USER gitlab-psql
+ENTRYPOINT ["sleep", "36000"]
+
+```
+
+
+
+
