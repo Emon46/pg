@@ -17,9 +17,12 @@ for major upgrade need to take steps one by one.
 11. resume coordinator sidecar
 12. then restart other pods and take basebackup
 
-
-
 # pg upgrade design
+
+
+<img width="351" alt="Screenshot 2567-09-16 at 14 37 12" src="https://github.com/user-attachments/assets/c3dd51f4-e555-4d1c-ae51-1418cda625d5">
+
+
 
 ### Patroni with postgres
 - diable write mode in leader node
