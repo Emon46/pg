@@ -1,4 +1,21 @@
 
+### k8s pg cluster update
+
+
+for major upgrade need to take steps one by one. 
+
+1. transfer primary role to pod-0
+2.  pause postgres sidecar so that the sidecar don't apply any changes.
+3. restart pod-0
+4. then we need to initialize with initdb a new directory where we are going to store updated data from old data directory.
+5. here new directory is /data.new .
+6. then make sure the server that was running with old data directory is shutdown gracefully.
+7. if not, run it in single user mode and shut it down gracefully
+8. apply pg_upgrade
+9. mode data from new directory to old directory .
+10. transfer leader role to pod-0
+11. resume coordinator sidecar
+12. then restart other pods and take basebackup
 
 
 
@@ -10,7 +27,7 @@
 - Shutdown database (or Postgres service).
 - run initdb to initialize new database
   ```
-  export PGDATA=/var/pv/data.new && rm -rf /var/pv/data.new/* && /<pg-newVersion>/initdb --pgdata=/var/pv/data.new
+  rm -rf /var/pv/data.new/* && /<pg-newVersion>/initdb --pgdata=/var/pv/data.new
   ```
 - Copy configurations file pg_hba.conf, postgres.conf, postgres_auto.cong or other files if there is any.
 - do pg_upgrade (check the log properly, if there is any post action required it should be detailed in the logs)
@@ -160,23 +177,6 @@ su - postgres -c "/usr/lib/postgresql/14/bin/pg_upgrade --jobs=3 -U gitlab-psql 
 CREATE ROLE postgres WITH SUPERUSER LOGIN PASSWORD 'your_password';
 ```
 
-### k8s cluster update
-
-
-for major upgrade need to take steps one by one. 
-
-1. transfer primary role to pod-0
-2.  pause postgres sidecar so that the sidecar don't apply any changes.
-3. restart pod-0
-4. then we need to initialize with initdb a new directory where we are going to store updated data from old data directory.
-5. here new directory is /var/pv/data.new .
-6. then make sure the server that was running with old data directory is shutdown gracefully.
-7. if not, run it in single user mode and shut it down gracefully
-8. apply pg_upgrade
-9. mode data from new directory to old directory .
-10. transfer leader role to pod-0
-11. resume coordinator sidecar
-12. then restart other pods and take basebackup
 
 
 
