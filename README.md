@@ -55,7 +55,8 @@ su - gitlab-psql -c "/opt/gitlab/embedded/postgresql/14/bin/pg_ctl stop -D /var/
 
 /opt/gitlab/embedded/bin/sv stop patroni 
 ```
-### 
+
+### this is for just my testing
 
 
 copy the data directory:
