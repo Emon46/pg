@@ -35,7 +35,9 @@ The most immediate solution that comes to mind is **Vertical Pod Autoscaling (VP
 This refined approach can help us with the resource management
 
 ref-1: https://kubernetes.io/blog/2023/05/12/in-place-pod-resize-alpha/
+
 ref-2: https://gluo.be/seamless-autoscaling-with-in-place-resource-resize-for-k8s/
+
 ref-3: https://medium.com/@karla.saur/trying-out-the-new-in-place-pod-resource-resizing-68a0b3c42b72
 
 
