@@ -1,6 +1,8 @@
 # Resource Optimization Discussion
 
 To illustrate, let’s take Pinto as an example to explore how we can optimize resource usage.
+<img width="754" alt="Screenshot 2024-11-01 at 2 33 29 AM" src="https://github.com/user-attachments/assets/1703171c-9aab-4cdf-9363-24ba6dace5b4">
+
 
 ## Resource Allocation Challenges for Services
 
