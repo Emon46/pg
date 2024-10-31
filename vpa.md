@@ -1,0 +1,19 @@
+For the sake of the discussion i will try to take pinto as an example and how we can be more efficient on resource.
+- for services one of the hardest thing is to know what kind of resource our developer need to set for their services.
+- there are different case we need to consider. 
+  - service bootsrap time vs run-time: sometimes a service require more cpu or memory at the time of bootstrap but it goes down drastically after done with resource.
+  - sometime for application like kafka or couchbase the resource consumption increase when there are regression test or integration test run which leads to more api call the service
+  - when we create request throw api server the scheduler look for the cpu request or memory request not for actual usage of cpu or memory. Which means there can be a scenario where we under utilise the resources. Like lets say total request is 60core but usage is 40 core. this is where i see the opertunity to be more optimistic,
+  - Now let's explore how we can the advantage of this observation:
+    - first thing that comes to mind is obviously what if we can start using vertical auto scaling
+        - limitation that we aware of:
+            - it requires restart of the pod. so if the restart happens then it will again bootstrap and will require more resources again. So only VPA will not help;
+            - here comes handy one of the k8s alpha feature from k8s 1.27. Inplace patching of kubernetes resources
+            - so now there are three items that need to be in sync. our devstack controller, VPA, inplace kuberenetes resource allocation
+            - from where we can start. We can start trying with a formula to see how does this impact our cluster. 
+                - lets assume user set a 1000m core resource for there usage. 
+                - and for vpa we need to set what min and max the resize can be
+                - so we will start with something by default where min (-20%) of actual resources request and max(+20%) actual resource request
+                - and we have inplace pathc of resource which will make sure we avoid restart of a service
+                - now the most tricky thing here is we need to adapt this resize with our reconciler, because our reconciler will always see the desired state for the pod to be what we set in our devstack yaml
+                - so we need to have watcher against the vpa whenever there is one action taken from VPA controller it will adapt those in the devstack component level.
